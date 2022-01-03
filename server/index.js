@@ -3,13 +3,16 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const router = require("./router/");
 
 const { PORT, DB_URL } = process.env;
 
 const app = express();
 
-app.use(cors());
+app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
+app.use("/api", router);
 
 const start = async () => {
   try {
@@ -17,7 +20,6 @@ const start = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
- 
     app.listen(PORT, () => {
       console.log(`The server is working on port ${PORT}`);
     });
