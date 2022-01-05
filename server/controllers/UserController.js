@@ -1,7 +1,15 @@
+const UserService = require("../services/UserService");
+
 class UserController {
   async registration(req, res, next) {
     try {
-      return res.status(200).json({ message: "UserController Registration" });
+      const { email, password } = req.body;
+      const userData = await UserService.registration(email, password);
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      return res.status(200).json({ userData });
     } catch (e) {
       console.log(`Something went wrong in UserController -> registration`, e);
     }
