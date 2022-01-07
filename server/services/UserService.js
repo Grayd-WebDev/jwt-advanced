@@ -27,6 +27,14 @@ class UserService {
     const tokens = TokenService.generateTokens({ ...dto });
     return { ...tokens, user: dto };
   }
+  async activate(activationLink) {
+    const user = await UserModel.findOne({ activationLink });
+    if (!user) {
+      throw new Error(`The activation link is incorrect`);
+    }
+    user.isActivated = true;
+    await user.save();
+  }
 }
 
 module.exports = new UserService();

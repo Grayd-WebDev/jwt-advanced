@@ -37,7 +37,9 @@ class UserController {
   }
   async activate(req, res, next) {
     try {
-      return res.status(200).json({ message: "UserController Activate" });
+      const { link } = req.params;
+      await UserService.activate(link);
+      return res.redirect(process.env.CLIENT_URL);
     } catch (e) {
       console.log(`Something went wrong in UserController -> activate`, e);
     }
