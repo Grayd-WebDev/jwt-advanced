@@ -1,8 +1,14 @@
 const UserService = require("../services/UserService");
+const { validationResult } = require("express-validator");
+const ApiError = require("../exceptions/ApiError");
 
 class UserController {
   async registration(req, res, next) {
     try {
+      const validated = validationResult(req);
+      if (!validated.isEmpty()) {
+        return next(ApiError.BadRequestError("The credentials are wrong.", validated.errors));
+      }
       const { email, password } = req.body;
       const userData = await UserService.registration(email, password);
       res.cookie("refreshToken", userData.refreshToken, {

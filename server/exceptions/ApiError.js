@@ -1,4 +1,4 @@
-module.exports = class ApiError extends Error{
+module.exports = class ApiError extends Error {
   constructor(status, message, errors = []) {
     super(message);
 
@@ -11,4 +11,4 @@ module.exports = class ApiError extends Error{
   static BadRequestError(message, errors) {
     return new ApiError(400, message, errors);
   }
-}; 
+};
