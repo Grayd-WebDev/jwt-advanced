@@ -7,7 +7,12 @@ class UserController {
     try {
       const validated = validationResult(req);
       if (!validated.isEmpty()) {
-        return next(ApiError.BadRequestError("The credentials are wrong.", validated.errors));
+        return next(
+          ApiError.BadRequestError(
+            "The credentials are wrong.",
+            validated.errors
+          )
+        );
       }
       const { email, password } = req.body;
       const userData = await UserService.registration(email, password);
@@ -22,7 +27,14 @@ class UserController {
   }
   async login(req, res, next) {
     try {
-      return res.status(200).json({ message: "UserController Login" });
+      const { email, password } = req.body;
+
+      const userData = await UserService.login(email, password);
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      return res.status(200).json({ userData });
     } catch (e) {
       next(e);
     }

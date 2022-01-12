@@ -10,7 +10,7 @@ class TokenService {
     });
     const refreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, {
       expiresIn: "30d",
-    });
+    }); 
     return {
       accessToken,
       refreshToken,
@@ -23,7 +23,7 @@ class TokenService {
       tokenData.refreshToken = refreshToken;
       return tokenData.save();
     }
-    const token = tokenData.create({ user, refreshToken });
+    const token = TokenModel.create({ user: userId, refreshToken });
     return token;
   }
 }
