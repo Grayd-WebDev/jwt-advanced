@@ -41,14 +41,27 @@ class UserController {
   }
   async logout(req, res, next) {
     try {
-      return res.status(200).json({ message: "UserController Login" });
+      const { refreshToken } = req.cookies;
+
+      const userLogout = await UserService.logout(refreshToken);
+      res.clearCookie("refreshToken");
+      return res.status(200).json({
+        logoutInfo: userLogout,
+        message: "Logout complete successfully.",
+      });
     } catch (e) {
       next(e);
     }
   }
   async refresh(req, res, next) {
     try {
-      return res.status(200).json({ message: "UserController Refresh" });
+      const { refreshToken } = req.cookies;
+      const userData = await UserService.refresh(refreshToken);
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 30 * 24 * 30 * 30 * 1000,
+        httpOnly: true,
+      });
+      return res.status(200).json({ userData });
     } catch (e) {
       next(e);
     }
