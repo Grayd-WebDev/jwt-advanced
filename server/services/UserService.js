@@ -71,13 +71,17 @@ class UserService {
     }
     const user = await UserModel.findById({ id: refreshTokenVerified.id });
     const tokens = await TokenService.generateTokens();
-    
+
     await TokenService.saveToken(user.id, tokens.refreshToken);
-    
+
     return {
       ...tokens,
       user,
     };
+  }
+  async getAllUsers() {
+    const users = await UserModel.find();
+    return users;
   }
 }
 

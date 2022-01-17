@@ -1,8 +1,9 @@
-const { Router } = require("express");
 const UserController = require("../controllers/UserController");
-const router = new Router();
+const authMiddleware = require("../middlewares/authMiddleware");
+const { Router } = require("express");
 const { body } = require("express-validator");
 
+const router = new Router();
 router.post(
   "/registration",
   body("email").isEmail(),
@@ -11,7 +12,7 @@ router.post(
 );
 router.get("/activate/:link", UserController.activate);
 router.get("/refresh", UserController.refresh);
-router.get("/users", UserController.getUsers);
+router.get("/users", authMiddleware, UserController.getUsers);
 router.post("/login", UserController.login);
 router.post("/logout", UserController.logout);
 

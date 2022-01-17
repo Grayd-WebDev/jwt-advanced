@@ -77,7 +77,11 @@ class UserController {
   }
   async getUsers(req, res, next) {
     try {
-      res.status(200).json({ message: "UserController Users" });
+      if (!req.user) {
+        return next(ApiError.UnauthorizedError());
+      }
+      const users = await UserService.getAllUsers();
+      res.status(200).json({ users });
     } catch (e) {
       next(e);
     }

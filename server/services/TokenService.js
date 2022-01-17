@@ -32,16 +32,16 @@ class TokenService {
   }
 
   async verifyAToken(token) {
-    const {ACCESS_SECRET_KEY} = process.env;
-    
-    const userData = jwt.verify(token, ACCESS_SECRET_KEY);
+    const { ACCESS_SECRET_KEY } = process.env;
+
+    const userData = await jwt.verify(token, ACCESS_SECRET_KEY);
     return userData;
   }
 
   async verifyRToken(token) {
-    const {REFRESH_SECRET_KEY} = process.env;
+    const { REFRESH_SECRET_KEY } = process.env;
 
-    const userData = jwt.verify(token,REFRESH_SECRET_KEY);
+    const userData = await jwt.verify(token, REFRESH_SECRET_KEY);
     return userData;
   }
 
