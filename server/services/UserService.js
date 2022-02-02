@@ -5,6 +5,7 @@ const ApiError = require("../exceptions/ApiError");
 const UserDto = require("../dto/UserDto");
 const bcrypt = require("bcrypt");
 const uuid = require("uuid");
+const { Mongoose } = require("mongoose");
 
 class UserService {
   async registration(email, password) {
@@ -69,8 +70,12 @@ class UserService {
     if (!refreshTokenDB || !refreshTokenVerified) {
       throw ApiError.UnauthorizedError();
     }
-    const user = await UserModel.findById({ id: refreshTokenVerified.id });
-    const tokens = await TokenService.generateTokens();
+    console.log(refreshTokenVerified);
+    const user = await UserModel.findOne({
+      id: refreshTokenVerified.id,
+    });
+    const userDto = new UserDto(user);
+    const tokens = await TokenService.generateTokens({ ...userDto });
 
     await TokenService.saveToken(user.id, tokens.refreshToken);
 
