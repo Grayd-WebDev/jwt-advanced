@@ -7,10 +7,10 @@ class AuthService {
     return $api.post<AuthResponse>("/login", { email, password });
   }
   static async registration(email:string, password:string): Promise<AxiosResponse<AuthResponse>> {
-    return $api.post("/registration", { email, password });
+    return $api.post<AuthResponse>("/registration", { email, password });
   }
   static async logout():Promise<void>{
-    return $api.post("/refresh");
+    return $api.post("/logout");
   }
 }
 

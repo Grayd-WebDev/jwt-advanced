@@ -81,7 +81,7 @@ class UserController {
         return next(ApiError.UnauthorizedError());
       }
       const users = await UserService.getAllUsers();
-      res.status(200).json({ users });
+      res.status(200).json([...users]);
     } catch (e) {
       next(e);
     }

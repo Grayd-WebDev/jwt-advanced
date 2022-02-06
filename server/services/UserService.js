@@ -11,6 +11,7 @@ class UserService {
   async registration(email, password) {
     const { SITE_URL } = process.env;
     const candidate = await UserModel.findOne({ email });
+
     if (candidate) {
       throw ApiError.BadRequestError(
         `User with this email ${email} already exists`
@@ -33,14 +34,7 @@ class UserService {
 
     return { ...tokens, user: dto };
   }
-  async activate(activationLink) {
-    const user = await UserModel.findOne({ activationLink });
-    if (!user) {
-      throw ApiError.BadRequestError(`The activation link is incorrect`);
-    }
-    user.isActivated = true;
-    await user.save();
-  }
+
   async login(email, password) {
     const user = await UserModel.findOne({ email });
     if (!user) {
@@ -54,8 +48,18 @@ class UserService {
     const tokens = TokenService.generateTokens({ ...dto });
     await TokenService.saveToken(dto.id, tokens.refreshToken);
 
-    return { user: dto, ...tokens };
+    return { ...tokens, user: dto };
   }
+
+  async activate(activationLink) {
+    const user = await UserModel.findOne({ activationLink });
+    if (!user) {
+      throw ApiError.BadRequestError(`The activation link is incorrect`);
+    }
+    user.isActivated = true;
+    await user.save();
+  }
+
   async logout(refreshToken) {
     const removedToken = await TokenService.removeToken(refreshToken);
     return removedToken;
@@ -70,7 +74,6 @@ class UserService {
     if (!refreshTokenDB || !refreshTokenVerified) {
       throw ApiError.UnauthorizedError();
     }
-    console.log(refreshTokenVerified);
     const user = await UserModel.findOne({
       id: refreshTokenVerified.id,
     });
